@@ -140,3 +140,7 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 - Desktop map has a separate quest panel, fixed camera controls, floating navigation and avatar chat. Avatar uses two columns; document bubbles use three, rewards four, and settings two. Intro/login now adapt to wider screens. Safe-area bottom spacing retained.
 - Browser checked map at320x740,768x1024 and1440x1000, desktop avatar and documents. Horizontal scrollWidth equals viewport width at320/768 and desktop documents (1425px excluding scrollbar). Real iPhone testing remains with team. No auth/data/backend changes or API calls.
 - Checks: typecheck/lint/build pass; UX27/27 pass; server rules n/a (0 tests). Existing bundle warning only. Files: responsive.css, experience/entry.js, src/entry.css, PROGRESS.md. Database/deploy/team setup: none. Step2 visual adaptation; iPhone verification pending.
+
+## Persistent mobile preview — 2026-10-08
+- Browser viewport override did not persist to the user-visible view. Added public/mobile.html with a phone-width iframe loading the real authenticated app, so mobile media queries remain active regardless of desktop panel width. No separate data or fake session. On actual narrow devices, preview fills viewport. No schema or API changes.
+- Checks: typecheck/lint/build passed; server rules n/a (Vitest0 tests). Preview opened in Codex browser. Actual device verification remains pending.
