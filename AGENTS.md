@@ -54,3 +54,6 @@ Before finishing any task, typecheck, lint, test and build must pass. Put the re
 - `src/components/ui/` (shadcn, generated) and `src/lib/database.types.ts` (generated).
 - Applied migrations in `supabase/migrations/`. Add a new one only when a prompt asks.
 - Supabase Dashboard, Secrets, Vault and Vercel settings: the team manages them. If something must be set there, list the exact step in the report.
+
+## Latest user override — 2026-10-08
+The user explicitly requires ALL navigation, visuals, UX and prototype interactions from the approved `future-self-app` at localhost:5188 and the supplied screenshots. That request overrides SRS screen layout/design and prototype feature exclusions: Mapa, Zadaci, Ekipa, Avatar, Više; documents, rewards and settings under Više; global avatar chat, original camera, custom categories, HR/EN, themes and original animations. Preserve backend security requirements. Do not substitute the SRS five-screen layout again.

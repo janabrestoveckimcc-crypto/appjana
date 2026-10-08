@@ -6,6 +6,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run --passWithNoTests",
+    "test:ux": "node --test experience/tests/*.test.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 4195"
   },
   "dependencies": {

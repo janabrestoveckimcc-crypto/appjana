@@ -68,3 +68,11 @@ Registration explicitly sends the current app origin as `emailRedirectTo`. Hoste
 - Redirect URLs: `http://127.0.0.1:5195/` and `http://localhost:5195/`.
 
 The team manages Dashboard settings. Editing local `supabase/config.toml` does not update hosted Auth settings. Open confirmation mail on the computer running Vite; localhost on a phone means that phone. If verification succeeded before a failed redirect, try signing in directly at the app first. Existing email links are not rewritten by this code change.
+
+## Approved UI (latest user direction)
+
+The active application now uses the original approved `future-self-app` experience in `experience/`, served at `/experience.html` inside the authenticated React shell. Vite builds both entry points. The iframe isolates original styles from Tailwind and shares no tokens by message. Navigation is Mapa / Zadaci / Ekipa / Avatar / Više; the SRS five-screen layout is superseded by the user's explicit instruction.
+
+Supabase sign-in and validated username/avatar/language saves are real. Original tasks, document bubbles/uploads, proof files, categories, HP/XP and preferences are LOCAL per account during this UI transfer. They do not sync with Supabase task/document rows yet. Social, AI chat, password change, push and Apple sync retain their original demo notices. Never treat prototype HP as a server award. Backend read modules remain available for the following integration pass.
+
+Run the original UX behavior checks with `node --test experience/tests/*.test.mjs` (26 cases). These are distinct from future server rule tests. Do not modify localhost:5188 to change this app.

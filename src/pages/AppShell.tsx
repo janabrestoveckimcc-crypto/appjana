@@ -1,34 +1,60 @@
-import { useEffect,useState } from 'react';
-import { NavLink,useLocation } from 'react-router';
-import { useQueryClient } from '@tanstack/react-query';
-import { useProfile } from '../features/profile/hooks/use-profile';
-import { ProfileEditor } from '../features/profile/components/ProfileEditor';
-import { avatarSchema } from '../features/profile/profile.types';
-import { signOut } from '../features/onboarding/services/auth.service';
-import { useT } from '../lib/i18n/use-t';
-import { QueryState } from '../components/shared/QueryState';
-import { MapPage } from './MapPage';
-import { WelcomeBubbles } from '../components/shared/WelcomeBubbles';
-import { DocumentsPage } from './DocumentsPage';
-import { CalendarPage } from './CalendarPage';
-import { AssistantPage } from './AssistantPage';
-const nav = [['/','map','⌁'],['/documents','documents','▤'],['/assistant','assistant','✧'],['/calendar','calendar','▦'],['/profile','profile','◉']] as const;
-export function AppShell({userId}:{userId:string}) {
-  const {t,language,setLanguage}=useT();
-  const {profile,save}=useProfile(userId);
-  const cache=useQueryClient();
-  const location=useLocation();
-  const [logoutError,setLogoutError]=useState(false);
-  useEffect(()=>{ if(profile.data) setLanguage(profile.data.language==='en'?'en':'hr'); },[profile.data?.language,setLanguage,profile.data]);
-  async function logout():Promise<void> { try { await signOut(); cache.clear(); } catch { setLogoutError(true); } }
-  if (!profile.data) return <main className="app-shell"><QueryState loading={profile.isPending} error={profile.isError} retry={()=>void profile.refetch()}/><button onClick={logout}>{t.signOut}</button></main>;
-  const data=profile.data;
-  const editor=<ProfileEditor key={data.id} profile={data} onSave={input=>save.mutate(input)} pending={save.isPending} error={save.isError}/>;
-  if(!data.display_name) return <main className="app-shell onboarding"><header><span className="wordmark">{t.brand}</span><button className="language" onClick={()=>setLanguage(language==='hr'?'en':'hr')}>{t.language}</button></header><h1>{t.profileIntro}</h1><p>{t.profileBody}</p>{editor}<button className="quiet" onClick={logout}>{t.signOut}</button></main>;
-  let page=<MapPage profile={data}/>;
-  if(location.pathname==='/documents') page=<DocumentsPage userId={userId}/>;
-  if(location.pathname==='/calendar') page=<CalendarPage userId={userId}/>;
-  if(location.pathname==='/assistant') page=<AssistantPage userId={userId} avatar={data.avatar_config}/>;
-  if(location.pathname==='/profile') page=<section className="content-page"><h1>{data.display_name}</h1><div className="profile-stats"><span>{data.hp} {t.hp}</span><span>{data.streak_days} · {t.streak}</span></div><label>{t.language}<select value={data.language} disabled={save.isPending} onChange={event=>save.mutate({display_name:data.display_name,tone:data.tone as 'blago'|'sarkasticno'|'brutalno',language:event.target.value as 'hr'|'en',avatar_config:avatarSchema.parse(data.avatar_config)})}><option value="hr">{t.croatian}</option><option value="en">{t.english}</option></select></label>{editor}<button className="quiet" onClick={logout}>{t.signOut}</button>{logoutError&&<p role="alert">{t.authError}</p>}</section>;
-  return <main className="app-shell"><header className="app-header"><NavLink to="/" className="wordmark">{t.brand}</NavLink><span>{data.display_name}</span></header>{page}<WelcomeBubbles/><nav className="bottom-nav" aria-label={t.navigation}>{nav.map(([path,label,icon])=><NavLink end={path==='/'} key={path} to={path}><span aria-hidden="true">{icon}</span><small>{t[label]}</small></NavLink>)}</nav></main>;
+import {useEffect,useRef,useState} from 'react';
+import {z} from 'zod';
+import {useProfile} from '../features/profile/hooks/use-profile';
+import {getSupabase} from '../lib/supabase';
+import {useT} from '../lib/i18n/use-t';
+import {QueryState} from '../components/shared/QueryState';
+import {signOut} from '../features/onboarding/services/auth.service';
+import {useQueryClient} from '@tanstack/react-query';
+const appearance=z.object({
+ gender:z.enum(['female','male']),height:z.number().min(100).max(250),build:z.number().min(0).max(100),
+ eyes:z.string().regex(/^#[0-9a-f]{6}$/i),hair:z.string().regex(/^#[0-9a-f]{6}$/i),
+ hairLength:z.string().max(20).optional(),beard:z.string().max(20).optional(),
+});
+const update=z.object({
+ profile:z.object({username:z.string().regex(/^[A-Za-z0-9_.]{3,24}$/)}),
+ avatar:appearance,
+ prefs:z.object({language:z.enum(['hr','en']),tone:z.enum(['supportive','direct','roast'])}),
+});
+// Preserve original CSS in an isolated document. No auth token enters the frame.
+// Only profile edits reach Supabase; prototype task/HP state is not cloud data.
+export function AppShell({userId}:{userId:string}){
+ const {profile}=useProfile(userId);
+ const {t}=useT();
+ const cache=useQueryClient();
+ const frame=useRef<HTMLIFrameElement>(null);
+ const [failed,setFailed]=useState(false);
+ useEffect(()=>{
+  const data=profile.data;if(!data)return;
+  let timer:ReturnType<typeof setTimeout>|undefined;
+  let active=true,lastSaved='';
+  const sendInitial=()=>frame.current?.contentWindow?.postMessage({
+   type:'relai:init',userId,language:data.language,
+   profile:data.display_name?{username:data.display_name,firstName:'',lastName:'',birthDate:'',gender:'female'}:null,
+   avatar:appearance.safeParse(data.avatar_config).success?data.avatar_config:undefined,
+  },window.location.origin);
+  function receive(event:MessageEvent){
+   if(event.origin!==window.location.origin||event.source!==frame.current?.contentWindow)return;
+   if(event.data?.type==='relai:ready'){sendInitial();return;}
+   if(event.data?.type==='relai:logout'){
+    void signOut().then(()=>cache.clear()).catch(()=>setFailed(true));return;
+   }
+   if(event.data?.type!=='relai:profile')return;
+   const parsed=update.safeParse(event.data.state);if(!parsed.success)return;
+   const value=parsed.data;
+   const clean={display_name:value.profile.username,language:value.prefs.language,
+    tone:({supportive:'blago',direct:'sarkasticno',roast:'brutalno'} as const)[value.prefs.tone],avatar_config:value.avatar};
+   const key=JSON.stringify(clean);if(key===lastSaved)return;
+   clearTimeout(timer);
+   timer=setTimeout(()=>{
+    void getSupabase().from('profiles').update(clean).eq('id',userId).then(({error})=>{
+     if(!active)return;setFailed(Boolean(error));if(!error)lastSaved=key;
+    });
+   },500);
+  }
+  window.addEventListener('message',receive);sendInitial();
+  return()=>{active=false;clearTimeout(timer);window.removeEventListener('message',receive);};
+ },[userId,profile.data,cache]);
+ if(!profile.data)return <main className="app-shell"><QueryState loading={profile.isPending} error={profile.isError} retry={()=>void profile.refetch()}/></main>;
+ return <><iframe ref={frame} src="/experience.html" title="relAI" className="approved-experience"/>{failed&&<p role="alert" className="experience-save-error">{t.saveError}</p>}</>;
 }
