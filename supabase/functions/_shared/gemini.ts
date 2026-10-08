@@ -25,9 +25,9 @@ function validateReply(value: unknown): void {
 // This temporary smoke check intentionally has NO retries or automatic fallback.
 // Each authenticated invocation makes at most one generation request.
 export async function checkGemini(input: {
-  apiKey: string; language: Language; now: Date; fetcher: typeof fetch;
-}): Promise<{ ok: true; model: string }> {
-  if (!input.apiKey) throw new AppError('AI-0001');
+  apiKey: string; language: Language; tone: string; now: Date; fetcher: typeof fetch;
+}): Promise<{ ok: true; model: string; reply: string }> {
+  if (!input.apiKey || !MAIN_MODEL_ID) throw new AppError('AI-0001');
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
@@ -37,10 +37,10 @@ export async function checkGemini(input: {
         method: 'POST', signal: controller.signal,
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': input.apiKey },
         body: JSON.stringify({
-          systemInstruction: { parts: [{ text: `${currentTimeContext(input.now, input.language)}\n${checkPrompts[input.language]}` }] },
+          systemInstruction: { parts: [{ text: `${currentTimeContext(input.now, input.language)}\nTone: ${input.tone}\n${checkPrompts[input.language]}` }] },
           contents: [{ role: 'user', parts: [{ text: 'OK' }] }],
           generationConfig: {
-            maxOutputTokens: 256, thinkingConfig: { thinkingLevel: 'low' },
+            maxOutputTokens: 256,
             responseMimeType: 'application/json',
             responseSchema: { type: 'OBJECT', properties: { reply: { type: 'STRING', enum: ['OK'] } }, required: ['reply'] },
           },
@@ -52,7 +52,7 @@ export async function checkGemini(input: {
       throw new AppError('AI-0002');
     }
     validateReply(await response.json());
-    return { ok: true, model: MAIN_MODEL_ID };
+    return { ok: true, model: MAIN_MODEL_ID, reply: 'OK' };
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw new AppError(controller.signal.aborted ? 'AI-0003' : 'AI-0002');

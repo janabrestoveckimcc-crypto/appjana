@@ -26,4 +26,5 @@ export const hr = {
   confirmEmail: 'Provjeri email i potvrdi račun, zatim se prijavi.',
   signedIn: 'Uspješno si prijavljen/a.', connected: 'Supabase prijava je povezana. Sljedeći korak je povezivanje profila i postojećih tablica.',
   signOut: 'Odjavi se', language: 'English', sessionError: 'Sesiju nije moguće provjeriti. Pokušaj ponovno.', retry: 'Pokušaj ponovno',
+  aiChecking: 'Provjeravam…', aiCheckFailed: 'Provjera nije uspjela.', aiListModels: 'Dostupni AI modeli', aiTest: 'Testiraj Gemini',
 } as const;

@@ -5,7 +5,7 @@
 project_id = "appjana"
 
 [functions.gemini-check]
-verify_jwt = true
+verify_jwt = false # User JWT is validated by Auth.getUser in the handler.
 
 [api]
 enabled = true

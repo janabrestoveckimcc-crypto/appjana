@@ -27,4 +27,5 @@ export const en: Record<keyof typeof hr, string> = {
   confirmEmail: 'Check your email and confirm your account, then sign in.',
   signedIn: 'You are signed in.', connected: 'Supabase sign-in is connected. Next, we will connect your profile and existing tables.',
   signOut: 'Sign out', language: 'Hrvatski', sessionError: 'Unable to check your session. Please try again.', retry: 'Try again',
+  aiChecking: 'Checking…', aiCheckFailed: 'Check failed.', aiListModels: 'Available AI models', aiTest: 'Test Gemini',
 };

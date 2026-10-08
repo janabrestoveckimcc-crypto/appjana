@@ -1,13 +1,13 @@
 import { jsonResponse } from './cors.ts';
 
 const errors = {
-  'AUTH-0001': { status: 401, hr: 'Za ovu provjeru potrebna je operatorska autorizacija.', en: 'Operator authorization is required for this check.' },
+  'AUTH-0001': { status: 401, hr: 'Prijavi se za nastavak.', en: 'Sign in to continue.' },
   'REQ-0001': { status: 405, hr: 'Metoda nije podržana.', en: 'Method not allowed.' },
   'REQ-0002': { status: 400, hr: 'Neispravan zahtjev.', en: 'Invalid request.' },
   'AI-0001': { status: 503, hr: 'AI još nije konfiguriran.', en: 'AI is not configured yet.' },
-  'AI-0002': { status: 502, hr: 'AI provjera nije uspjela. Poziv nije ponovljen.', en: 'AI check failed. The request was not retried.' },
-  'AI-0003': { status: 504, hr: 'AI nije odgovorio na vrijeme. Poziv nije ponovljen.', en: 'AI timed out. The request was not retried.' },
-  'AI-0004': { status: 502, hr: 'AI je vratio neispravan odgovor. Poziv nije ponovljen.', en: 'AI returned an invalid response. The request was not retried.' },
+  'AI-0002': { status: 502, hr: 'AI trenutačno nije dostupan. Pokušaj ponovno kasnije.', en: 'AI is unavailable right now. Please try again later.' },
+  'AI-0003': { status: 504, hr: 'AI nije odgovorio na vrijeme. Pokušaj ponovno.', en: 'AI timed out. Please try again.' },
+  'AI-0004': { status: 502, hr: 'AI nije mogao pouzdano pročitati podatke. Pokušaj ponovno.', en: 'AI could not reliably read the data. Please try again.' },
   'SYS-0001': { status: 500, hr: 'Provjera nije uspjela.', en: 'The check failed.' },
 } as const;
 

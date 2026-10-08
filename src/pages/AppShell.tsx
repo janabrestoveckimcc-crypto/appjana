@@ -24,6 +24,20 @@ export function AppShell({userId}:{userId:string}){
  const cache=useQueryClient();
  const frame=useRef<HTMLIFrameElement>(null);
  const [failed,setFailed]=useState(false);
+ const [diagnostic,setDiagnostic]=useState('');
+ const [checking,setChecking]=useState(false);
+ async function checkAI(action:string){
+  if(checking)return;
+  setChecking(true);
+  setDiagnostic(t.aiChecking);
+  try{
+   const {data,error}=await getSupabase().functions.invoke('gemini-check',{body:{action}});
+   let details=data;
+   if(error?.context instanceof Response)details=await error.context.json().catch(()=>null);
+   setDiagnostic(JSON.stringify(details??{error:error?.message}));
+  }catch{setDiagnostic(t.aiCheckFailed);}
+  finally{setChecking(false);}
+ }
  useEffect(()=>{
   const data=profile.data;if(!data)return;
   let timer:ReturnType<typeof setTimeout>|undefined;
@@ -56,5 +70,5 @@ export function AppShell({userId}:{userId:string}){
   return()=>{active=false;clearTimeout(timer);window.removeEventListener('message',receive);};
  },[userId,profile.data,cache]);
  if(!profile.data)return <main className="app-shell"><QueryState loading={profile.isPending} error={profile.isError} retry={()=>void profile.refetch()}/></main>;
- return <><iframe ref={frame} src="/experience.html" title="relAI" className="approved-experience"/>{failed&&<p role="alert" className="experience-save-error">{t.saveError}</p>}</>;
+ return <><iframe ref={frame} src="/experience.html" title="relAI" className="approved-experience"/>{new URLSearchParams(location.search).has('ai-check')&&<aside style={{position:'fixed',top:0,left:0,zIndex:9999,background:'#132436',padding:16,maxWidth:'100%'}}><button disabled={checking} onClick={()=>void checkAI('models')}>{t.aiListModels}</button><button disabled={checking} onClick={()=>void checkAI('check')}>{t.aiTest}</button><pre role="status" style={{whiteSpace:'pre-wrap'}}>{diagnostic}</pre></aside>}{failed&&<p role="alert" className="experience-save-error">{t.saveError}</p>}</>;
 }

@@ -152,3 +152,11 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 - Added five pure-logic tests. UX suite 32/32 passes; typecheck, lint, syntax and build pass. npm test finds zero server tests. Existing bundle-size warning remains. Gemini calls this pass: 0.
 - Browser/manual acceptance not executed this pass; exact synthetic PDF/JPEG steps and acceptance matrix in docs/TEST_REPORT.md. No user documents altered.
 - Stopped before items 2–11: checklist forbids moving past a broken item; user forbids adding missing features. Recognition implementation requires a separate authorized implementation task. Existing prototype tests are not production SRS verification.
+
+## MAKE_IT_WORK thin demo — 2026-10-08
+- Latest user plan in docs/CODEX_MAKE_IT_WORK.md supersedes CODEX_TESTS and permits sequential deployment without further approval. Steps 0–3 required, Step 4 optional; existing UI preserved.
+- Fixed and deployed gemini-check user authentication. Auth.getUser validates the JWT inside the handler; no service-role token is requested from the browser. Unauthenticated live request returns 401; authenticated app request returns AI-0001/503.
+- Blocker: linked project secret-name listing does not include either supported Gemini key name. Two Google models.list calls returned 403 (unregistered caller). Guard now prevents repeated Google calls. Unverified model names removed; await actual model discovery after secret setup.
+- Prepared, but NOT activated: extraction function/schema, atomic document+task migration, cloud frontend adapter/mapping, synthetic PDF fixture. Migration only dry-run, no extraction deploy, no existing user data changed. Current UI remains local for tasks/files/game.
+- Pure rule preparation: 13/13 tests pass; UX32/32 pass; typecheck/lint/build and Deno checks pass. Existing chunk warning remains. Thin-date conventions: month-end clamp, half month=15 days, next named weekday strictly in future. No iPhone verification.
+- Full evidence, file scopes and follow-up instructions in docs/MAKE_IT_WORK_REPORT.md. Google usage: 2 model-list failures, 0 generations. Team must set GEMINI_API_KEY in Edge Functions Secrets on bjfrcyxaczqcxwccbuyx; do not send its value in chat.
