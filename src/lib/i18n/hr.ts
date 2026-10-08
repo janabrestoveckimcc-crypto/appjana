@@ -1,4 +1,12 @@
 export const hr = {
+  friendTitle:'Tvoja ekipa', friendClose:'Zatvori ekipu', friendIntro:'Pozovi prijatelja po usernameu. Povezat ćete se kada prihvati poziv.',
+  friendUsername:'Username prijatelja', friendInvite:'Pozovi', friendRefresh:'Osvježi pozivnice', friendLoading:'Učitavam ekipu…',
+  friendIncoming:'Primljeni pozivi', friendOutgoing:'Poslani pozivi', friendMembers:'Tvoji prijatelji', friendAccept:'Prihvati', friendDecline:'Odbij',
+  friendNoIncoming:'Nema novih poziva.', friendNoOutgoing:'Još nema poslanih poziva.', friendEmpty:'Tvoja ekipa počinje prvim pozivom.', friendWaiting:'Čeka odgovor',
+  friendPrivacy:'Dijelite samo username i avatar. Dokumenti i zadaci ostaju privatni. Grupni chat i utrka zasad su UX pregled.',
+  friendSent:'Poziv je poslan.', friendAccepted:'Poziv je prihvaćen. Sada ste povezani!', friendDeclined:'Poziv je odbijen.',
+  friendNotFound:'Nema korisnika s tim usernameom. Provjeri točan username.', friendSelf:'Ne možeš pozvati sebe.', friendInvalid:'Username mora imati 3–24 slova, broja, točke ili donje crte.',
+  friendAlready:'Već ste prijatelji.', friendPending:'Poziv već postoji. Provjeri primljene i poslane pozive.', friendResolved:'Ovaj je poziv već obrađen.', friendLimit:'Možeš poslati najviše 20 poziva u 24 sata.', friendError:'Nije uspjelo. Provjeri vezu i pokušaj ponovno.',
   introWelcome:'Dobrodošli u relAI',introContinue:'relAI · Nastavi',introTaglineA:'Na budućeg sebe se',introTaglineB:'uvijek možeš osloniti.',tapLogo:'DODIRNI relAI',firstStep:'i napravi prvi korak',
   newBeginning:'TVOJ NOVI POČETAK',startWithYou:'Krenimo od tebe.',futureIsHere:'Tvoj budući ti već je tu.',showPassword:'Prikaži lozinku',hidePassword:'Sakrij lozinku',emailPlaceholder:'tvoj@email.com',passwordPlaceholder:'Najmanje 8 znakova',
   croatian:'Hrvatski',english:'English',

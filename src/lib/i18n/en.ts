@@ -1,5 +1,13 @@
 import type { hr } from './hr';
 export const en: Record<keyof typeof hr, string> = {
+  friendTitle:'Your circle', friendClose:'Close circle', friendIntro:'Invite a friend by username. You connect when they accept your invitation.',
+  friendUsername:'Friend’s username', friendInvite:'Invite', friendRefresh:'Refresh invitations', friendLoading:'Loading your circle…',
+  friendIncoming:'Received invitations', friendOutgoing:'Sent invitations', friendMembers:'Your friends', friendAccept:'Accept', friendDecline:'Decline',
+  friendNoIncoming:'No new invitations.', friendNoOutgoing:'No invitations sent yet.', friendEmpty:'Your circle starts with your first invitation.', friendWaiting:'Awaiting reply',
+  friendPrivacy:'Only your username and avatar are shared. Documents and tasks stay private. Group chat and race are currently UX previews.',
+  friendSent:'Invitation sent.', friendAccepted:'Invitation accepted. You are now connected!', friendDeclined:'Invitation declined.',
+  friendNotFound:'No user with that username. Check the exact username.', friendSelf:'You cannot invite yourself.', friendInvalid:'Use 3–24 letters, numbers, dots or underscores.',
+  friendAlready:'You are already friends.', friendPending:'An invitation already exists. Check received and sent invitations.', friendResolved:'This invitation has already been handled.', friendLimit:'You can send up to 20 invitations in 24 hours.', friendError:'Something went wrong. Check your connection and try again.',
   introWelcome:'Welcome to relAI',introContinue:'relAI · Continue',introTaglineA:'You can always rely',introTaglineB:'on your future self.',tapLogo:'TAP relAI',firstStep:'and take your first step',
   newBeginning:'YOUR NEW BEGINNING',startWithYou:"Let's start with you.",futureIsHere:'Your future self is already here.',showPassword:'Show password',hidePassword:'Hide password',emailPlaceholder:'you@email.com',passwordPlaceholder:'At least 8 characters',
   croatian:'Hrvatski',english:'English',

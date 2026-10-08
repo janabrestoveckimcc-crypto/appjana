@@ -93,6 +93,7 @@ function render(){
  if(state.view==='ghost')content.innerHTML=game.avatarView();
  if(state.view==='calendar')content.innerHTML=taskViews.view();
  if(['groupchat','race'].includes(state.view))content.innerHTML=social.view();
+ if(['groupchat','race'].includes(state.view)&&integration.onFriends)content.querySelector('.rs-header').insertAdjacentHTML('afterend',`<button type="button" class="fs-primary" data-cloud-friends style="margin:16px 0;width:100%;justify-content:center">${icon('users')}${tr('Pozovi prijatelje · Pozivnice','Invite friends · Invitations')}</button>`);
  if(state.view==='rewards')content.innerHTML=milestones.view()+content.innerHTML;
  game.sync();
  const addButton=root.querySelector('.fs-page-header>.fs-primary');
@@ -130,6 +131,7 @@ root.addEventListener('change',async e=>{
 }, {signal});
 root.addEventListener('click',async e=>{
  const b=e.target.closest('button');if(!b||b.disabled)return;
+ if(b.hasAttribute('data-cloud-friends')){integration.onFriends?.(getLanguage());return;}
  if(b.dataset.language){state.prefs.language=setLanguage(b.dataset.language);notice='';noticeUndo=null;persist();render();renderNotice();root.dispatchEvent(new Event('relai:language-changed'));root.querySelector(`[data-language="${getLanguage()}"]`)?.focus({preventScroll:true});}
  if(b.dataset.tone){state.prefs.tone=b.dataset.tone;persist();render();}
  if(b.dataset.themeChoice){state.prefs.theme=b.dataset.themeChoice;persist();render();root.querySelector(`[data-theme-choice="${state.prefs.theme}"]`)?.focus({preventScroll:true});}

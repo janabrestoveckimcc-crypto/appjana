@@ -108,6 +108,30 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_invitations: {
+        Row: {
+          created_at: string
+          id: string
+          recipient_id: string
+          sender_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipient_id: string
+          sender_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipient_id?: string
+          sender_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           created_at: string
@@ -364,7 +388,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_my_circle: { Args: never; Returns: Json }
+      invite_friend: { Args: { p_username: string }; Returns: string }
+      respond_friend_invite: {
+        Args: { p_accept: boolean; p_id: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

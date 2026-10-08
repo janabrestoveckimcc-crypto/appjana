@@ -1,4 +1,5 @@
 import {PushSettings} from '../features/push/PushSettings';
+import {FriendsPanel} from '../features/friends/FriendsPanel';
 import {useEffect,useRef,useState} from 'react';
 import {z} from 'zod';
 import {useProfile} from '../features/profile/hooks/use-profile';
@@ -21,11 +22,12 @@ const update=z.object({
 // Only profile edits reach Supabase; prototype task/HP state is not cloud data.
 export function AppShell({userId}:{userId:string}){
  const {profile}=useProfile(userId);
- const {t}=useT();
+ const {t,setLanguage}=useT();
  const cache=useQueryClient();
  const frame=useRef<HTMLIFrameElement>(null);
  const [failed,setFailed]=useState(false);
  const [pushOpen,setPushOpen]=useState(false);
+ const [friendsOpen,setFriendsOpen]=useState(false);
  const [diagnostic,setDiagnostic]=useState('');
  const [checking,setChecking]=useState(false);
  async function checkAI(action:string){
@@ -52,6 +54,7 @@ export function AppShell({userId}:{userId:string}){
   function receive(event:MessageEvent){
    if(event.origin!==window.location.origin||event.source!==frame.current?.contentWindow)return;
    if(event.data?.type==='relai:push'){setPushOpen(true);return;}
+   if(event.data?.type==='relai:friends'){if(event.data.language==='hr'||event.data.language==='en')setLanguage(event.data.language);setFriendsOpen(true);return;}
    if(event.data?.type==='relai:ready'){sendInitial();return;}
    if(event.data?.type==='relai:logout'){
     void signOut().then(()=>cache.clear()).catch(()=>setFailed(true));return;
@@ -71,7 +74,7 @@ export function AppShell({userId}:{userId:string}){
   }
   window.addEventListener('message',receive);sendInitial();
   return()=>{active=false;clearTimeout(timer);window.removeEventListener('message',receive);};
- },[userId,profile.data,cache]);
+ },[userId,profile.data,cache,setLanguage]);
  if(!profile.data)return <main className="app-shell"><QueryState loading={profile.isPending} error={profile.isError} retry={()=>void profile.refetch()}/></main>;
- return <>{pushOpen&&<PushSettings userId={userId} close={()=>setPushOpen(false)}/>}<iframe ref={frame} src="/experience.html" title="relAI" className="approved-experience"/>{new URLSearchParams(location.search).has('ai-check')&&<aside style={{position:'fixed',top:0,left:0,zIndex:9999,background:'#132436',padding:16,maxWidth:'100%'}}><button disabled={checking} onClick={()=>void checkAI('models')}>{t.aiListModels}</button><button disabled={checking} onClick={()=>void checkAI('check')}>{t.aiTest}</button><pre role="status" style={{whiteSpace:'pre-wrap'}}>{diagnostic}</pre></aside>}{failed&&<p role="alert" className="experience-save-error">{t.saveError}</p>}</>;
+ return <>{friendsOpen&&<FriendsPanel close={()=>setFriendsOpen(false)}/>} {pushOpen&&<PushSettings userId={userId} close={()=>setPushOpen(false)}/>}<iframe ref={frame} src="/experience.html" title="relAI" className="approved-experience"/>{new URLSearchParams(location.search).has('ai-check')&&<aside style={{position:'fixed',top:0,left:0,zIndex:9999,background:'#132436',padding:16,maxWidth:'100%'}}><button disabled={checking} onClick={()=>void checkAI('models')}>{t.aiListModels}</button><button disabled={checking} onClick={()=>void checkAI('check')}>{t.aiTest}</button><pre role="status" style={{whiteSpace:'pre-wrap'}}>{diagnostic}</pre></aside>}{failed&&<p role="alert" className="experience-save-error">{t.saveError}</p>}</>;
 }
