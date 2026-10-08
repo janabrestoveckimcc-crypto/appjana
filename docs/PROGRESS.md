@@ -144,3 +144,11 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 ## Persistent mobile preview — 2026-10-08
 - Browser viewport override did not persist to the user-visible view. Added public/mobile.html with a phone-width iframe loading the real authenticated app, so mobile media queries remain active regardless of desktop panel width. No separate data or fake session. On actual narrow devices, preview fills viewport. No schema or API changes.
 - Checks: typecheck/lint/build passed; server rules n/a (Vitest0 tests). Preview opened in Codex browser. Actual device verification remains pending.
+
+## CODEX_TESTS item 1 — 2026-10-08
+- Read supplied checklist, SRS and repository docs. Copied checklist unchanged to docs/CODEX_TESTS.md.
+- Item 1 remains still broken: active uploads are local; extract-document and recognition/cloud pipeline have never been implemented. No automatic SRS category, title, document/expiry date or literal follow-up extraction exists.
+- Fixed existing local duplicate uploads with SHA-256 original/normalized content hashes, legacy blob checking and HR/EN feedback. No new feature, dependency, layout, migration, deployment or cloud change.
+- Added five pure-logic tests. UX suite 32/32 passes; typecheck, lint, syntax and build pass. npm test finds zero server tests. Existing bundle-size warning remains. Gemini calls this pass: 0.
+- Browser/manual acceptance not executed this pass; exact synthetic PDF/JPEG steps and acceptance matrix in docs/TEST_REPORT.md. No user documents altered.
+- Stopped before items 2–11: checklist forbids moving past a broken item; user forbids adding missing features. Recognition implementation requires a separate authorized implementation task. Existing prototype tests are not production SRS verification.

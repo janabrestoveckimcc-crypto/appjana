@@ -1,5 +1,6 @@
 import {t,locale,taskTitle} from './i18n.js';
 import {proofStore,preparePhoto} from './evidence.js';
+import {documentHash,isDuplicateDocument} from './document-fingerprint.mjs';
 
 // A validity date is a local calendar date, never a midnight UTC timestamp.
 function calendarDate(value){
@@ -78,7 +79,43 @@ export function createDocumentLibrary({root,getState,persist,notify,render,esc,i
     bubbles.forEach(b=>bubbleObserver.observe(b));
   }
   function refreshGrid(){const el=root.querySelector('[data-doc-grid]');if(!el)return;el.innerHTML=grid();root.querySelector('[data-doc-result-count]').textContent=fileCount(entries().filter(matches).length);hydrate();}
-  async function addFiles(files){if(busy)return;const uploadCategory=categoryFilter;busy=true;render();let count=0,errors=[];for(const file of [...files].slice(0,20)){try{if(file.size>8*1024*1024)throw new Error(t("Najviše 8 MB po datoteci.","Maximum 8 MB per file."));const id=crypto.randomUUID();let blob,mime;if(file.type==='application/pdf'){const header=new TextDecoder().decode(await file.slice(0,5).arrayBuffer());if(header!=='%PDF-')throw new Error(t("Datoteka nije valjani PDF.","This file is not a valid PDF."));blob=file;mime=file.type;}else{const photo=await preparePhoto(file);blob=photo.blob;mime=photo.mime;}await proofStore.put(id,blob);const state=getState();state.documents??=[];state.documents.push({id,name:file.name,mime,size:blob.size,createdAt:new Date().toISOString(),taskId:null,pinned:false,categoryId:uploadCategory,expiresOn:null});count++;persist();}catch(error){errors.push(file.name+': '+error.message);}}busy=false;filter='all';query='';render();notify(`${count?t('Spremljeno: {count} datoteka. ','Saved: {count} files. ',{count}):''}${errors.join(' ')||t("Tvoja zbirka je ažurirana.","Your collection is up to date.")}`);}
+  async function addFiles(files){
+    if(busy)return;
+    const uploadCategory=categoryFilter;busy=true;render();
+    let count=0;const errors=[];
+    for(const file of [...files].slice(0,20)){
+      try{
+        if(file.size>8*1024*1024)throw new Error(t("Najviše 8 MB po datoteci.","Maximum 8 MB per file."));
+        const fileHash=await documentHash(file);
+        const duplicateError=()=>new Error(t("Ova je datoteka već spremljena.","This file has already been saved."));
+        if(isDuplicateDocument({fileHash},entries()))throw duplicateError();
+        let blob,mime;
+        if(file.type==='application/pdf'){
+          const header=new TextDecoder().decode(await file.slice(0,5).arrayBuffer());
+          if(header!=='%PDF-')throw new Error(t("Datoteka nije valjani PDF.","This file is not a valid PDF."));
+          blob=file;mime=file.type;
+        }else{const photo=await preparePhoto(file);blob=photo.blob;mime=photo.mime;}
+        const contentHash=blob===file?fileHash:await documentHash(blob);
+        const existing=entries();
+        for(const document of existing){
+          if(!document.contentHash){
+            const previous=await proofStore.get(document.id);
+            if(previous)document.contentHash=await documentHash(previous);
+          }
+        }
+        if(isDuplicateDocument({fileHash,contentHash},existing))throw duplicateError();
+        if(signal.aborted)break;
+        const id=crypto.randomUUID();
+        await proofStore.put(id,blob);
+        const state=getState();state.documents??=[];
+        state.documents.push({id,name:file.name,mime,size:blob.size,fileHash,contentHash,createdAt:new Date().toISOString(),taskId:null,pinned:false,categoryId:uploadCategory,expiresOn:null});
+        count++;persist();
+      }catch(error){errors.push(file.name+': '+error.message);}
+    }
+    busy=false;if(signal.aborted)return;
+    filter='all';query='';render();
+    notify((count?t('Spremljeno: {count} datoteka. ','Saved: {count} files. ',{count}):'')+(errors.join(' ')||t("Tvoja zbirka je ažurirana.","Your collection is up to date.")));
+  }
   async function open(id){const d=entries().find(d=>d.id===id)||samples.find(d=>d.id===id);if(!d)return;const dialog=root.querySelector('.fs-doc-dialog');if(!dialog)return;const task=taskFor(d);dialog.innerHTML=`<div class="fs-doc-dialog-head"><span class="fs-tiny">${d.sample?t("UX PRIMJER","UX EXAMPLE"):isImage(d)?t("FOTOGRAFIJA","PHOTO"):t("PDF DOKUMENT","PDF DOCUMENT")}</span><button type="button" data-doc-action="close" class="fs-icon-button" aria-label="${t("Zatvori pregled","Close preview")}">${icon('x')}</button></div><h2 id="fs-doc-dialog-title">${esc(documentName(d))}</h2><div class="fs-doc-preview" data-doc-preview>${d.sample?`<div class="fs-doc-sample-sheet">${icon(isImage(d)?'image':'file-text')}<h3>${esc(documentCaption(d))}</h3><p>${isImage(d)?t('Mjesto za pregled tvoje fotografije.','Your photo preview appears here.'):t('Mjesto za pregled tvoje datoteke.','Your file preview appears here.')}</p><span>${t("PRIMJER DIZAJNA","DESIGN EXAMPLE")}</span></div>`:t("Učitavam pregled…","Loading preview…")}</div><div class="fs-doc-dialog-meta"><span>${d.sample?t("Primjerni sadržaj","Sample content"):bytes(d.size)}</span><span>${date(d)}</span><span>${icon('lock-keyhole')}${t('Privatno','Private')}</span></div>${d.sample?`<p class="fs-sub">${t("Dodaj vlastitu datoteku da isprobaš pravi pregled, povezivanje sa zadatkom i preuzimanje.","Add your own file to try previews, task links and downloads.")}</p>`:`<div class="fs-doc-edit-meta"><label class="fs-field">${t("Kategorija","Category")}<select data-doc-category="${esc(id)}" aria-label="${t("Kategorija dokumenta","Document category")}">${categoryOptions(categoryId(d))}</select></label><label class="fs-field"><span>${t('Rok valjanosti','Expiry date')} <small>${t("(neobavezno)","(optional)")}</small></span><input type="date" aria-label="${t("Rok valjanosti","Expiry date")}" data-doc-expiry="${esc(id)}" value="${esc(calendarDate(d.expiresOn)?d.expiresOn:'')}" max="9999-12-31" aria-describedby="fs-doc-expiry-help"></label><p id="fs-doc-expiry-help" class="fs-doc-expiry-help">${d.expiresOn&&documentExpiry(d.expiresOn)?esc(documentExpiry(d.expiresOn).description):t("Dodaj datum za dokumente koji imaju rok valjanosti.","Add a date for documents with an expiry date.")}</p></div><label class="fs-field">${d.fromProof?t("Dokaz za zadatak","Proof for task"):t("Poveži sa zadatkom","Link to a task")}<select data-doc-link="${esc(id)}" ${d.fromProof?'disabled':''}><option value="">${t("Bez povezanog zadatka","No linked task")}</option>${getState().tasks.map(task=>`<option value="${esc(task.id)}" ${task.id===d.taskId?'selected':''}>${esc(taskTitle(task))}</option>`).join('')}</select></label><p class="fs-small-print">${d.fromProof?t("Fotografija je priložena u zadatku.","The photo is attached to this task."):t("Povezivanje organizira datoteke; zadatak se dovršava u njegovu detalju.","Linking keeps files organized; complete the task in its details.")}</p>`}<div class="fs-actions">${task?`<button type="button" class="fs-secondary" data-doc-task="${esc(task.id)}">${icon('link')}${t('Otvori zadatak','Open task')}</button>`:''}${!d.sample?`<button type="button" class="fs-primary" data-doc-download="${esc(id)}">${icon('download')}${t('Preuzmi','Download')}</button><button type="button" class="fs-text-button" data-doc-delete="${esc(id)}">${t("Ukloni","Remove")}</button>`:`<button type="button" class="fs-primary" data-doc-action="close">${t("Jasno, krenimo","Got it, let's go")}</button>`}</div><p class="fs-small-print" data-doc-feedback role="status"></p>`;dialog.addEventListener('close',()=>{if(dialog.isConnected&&getState().view==='documents')render();},{once:true,signal});dialog.showModal();if(d.sample)return;try{const blob=await proofStore.get(id);if(!dialog.open||!dialog.isConnected)return;const preview=dialog.querySelector('[data-doc-preview]');if(!blob){preview.textContent=t("Datoteka nije dostupna na ovom uređaju.","This file is not available on this device.");return;}const url=URL.createObjectURL(blob);urls.push(url);if(isImage(d)){const img=document.createElement('img');img.src=url;img.alt=d.name;preview.replaceChildren(img);}else{preview.innerHTML=`<div class="fs-doc-sample-sheet">${icon('file-text')}<h3>${t("Tvoj PDF je spreman.","Your PDF is ready.")}</h3><p>${esc(documentName(d))}</p><span>${t("OTVORI GA PREUZIMANJEM DATOTEKE","DOWNLOAD THE FILE TO OPEN IT")}</span></div>`;}}catch{dialog.querySelector('[data-doc-preview]').textContent=t("Pregled nije dostupan. Pokušaj ponovno.","Preview unavailable. Please try again.");}}
   root.addEventListener('input',e=>{if(e.target.hasAttribute('data-doc-search')){query=e.target.value;refreshGrid();}if(e.target.hasAttribute('data-doc-expiry'))e.target.setCustomValidity('');},{signal});
   root.addEventListener('change',e=>{
