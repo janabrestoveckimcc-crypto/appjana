@@ -36,7 +36,7 @@ Vitest is limited to `supabase/functions/_shared/**/*.test.ts` per TESTING.md. N
 4. The team confirmed the database is empty. The single schema migration belongs to step 2; none is created in step 1.
 5. Generate `src/lib/database.types.ts` with the CLI after schema agreement. No hand-written generated type file is included.
 
-The current auth client deliberately has no database queries until generated types are available. No migration, remote database update, edge function deployment or secret change has been performed. The CLI link attempt failed because local CLI login is still missing.
+The current auth client deliberately has no database queries until generated types are available. The CLI is now logged in and linked. The initial schema is prepared in `supabase/migrations/20261008133212_initial_schema.sql`; dry run reports that migration only. It has **not** been applied. `supabase/tests/rls.sql` is the transactional security checklist to run after application. No secrets were changed.
 
 ## Step 1 Gemini check
 
@@ -49,6 +49,8 @@ npx supabase functions deploy gemini-check --project-ref bjfrcyxaczqcxwccbuyx --
 It requires the server-only service-role credential in the Authorization bearer header; never embed that credential in the frontend, source files or chat. The function accepts an empty body or `{"language":"hr"}` / `{"language":"en"}`. Success is `{"ok":true,"model":"gemini-3.8-flash"}`. It ignores no auth checks, receives no user documents, and validates Gemini's structured JSON reply.
 
 The team has a budget of **20 Gemini calls**. This check makes at most **one** generation request per invocation, with a 20-second timeout, no retry and no automatic fallback. It is never called on page load or in normal builds/tests. The fallback model constant is reserved for the later feature work. This is a per-invocation limit, not a global quota counter; record every actual generation attempt in PROGRESS.md. Remove the temporary function after a successful check before step 2.
+
+The temporary function is deployed. One operator request returned HTTP 401 before calling Gemini. Full administrator credential retrieval was blocked by automatic approval review; do not bypass that by copying credentials into source or chat. The team can perform the operator test in its Dashboard.
 
 Recorded Gemini attempts by this agent so far: **0**. Live model/key access has not yet been verified.
 

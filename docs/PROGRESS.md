@@ -2,7 +2,7 @@
 
 Codex updates this file after every task, before the step's commit. Only the team fills in the **Verified on iPhone** column.
 
-**Current step:** 1 — local configuration and Gemini check implementation complete; live deployment/check blocked on CLI login
+**Current step:** 2 — initial migration prepared; awaiting team approval to apply. Step 1 live Gemini check remains unverified.
 **Phase:** building
 **Push decision at 1:30 (SRS 13, step 3):** pending
 
@@ -11,8 +11,8 @@ Status: `todo` · `in-progress` · `done` · `blocked`
 
 | Step | Name | Status | Rules tests | Commit | Verified on iPhone (team) | Notes |
 |---|---|---|---|---|---|---|
-| 1 | Postavljanje | in-progress | n/a (no rules yet) | see git log | | Public config saved; Gemini smoke check written and typechecked; CLI login/deploy/live check outstanding |
-| 2 | Temelj | todo | n/a | | | |
+| 1 | Postavljanje | in-progress | n/a (no rules yet) | see git log | | CLI linked; gemini-check deployed; operator check returned 401 before Gemini; live model check outstanding |
+| 2 | Temelj | in-progress | n/a | see git log | | Initial schema and transactional security checklist prepared; dry run passes; migration NOT applied |
 | 3 | Push test (branch push-test, own Supabase and Vercel project) | todo | n/a | | | |
 | 4 | Dokumenti | todo | | | | |
 | 5 | Kalendar | todo | | | | |
@@ -36,13 +36,16 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 | 2026-10-08 | Gemini secret | Team reports `gemini_api_key` already in Supabase Secrets. Server supports that spelling and the specified `GEMINI_API_KEY`. Secret value not saved or repeated. |
 | 2026-10-08 | API budget | 20 Gemini calls available per team. Step-1 smoke check uses at most one call per invocation, no automatic retry/fallback, no frontend auto-check. Agent has made 0 generation attempts. |
 | 2026-10-08 | Check authorization | Temporary gemini-check requires existing service-role bearer credential plus gateway verification, so public site visitors cannot spend the check budget. No client-side check button. |
+| 2026-10-08 | CLI login | User completed CLI browser login. Project link succeeded. No login tokens copied into the repo. |
+| 2026-10-08 | Work continuation | User asked to continue making the app. Prepared step-2 migration while step-1 operator check remains unverified; no remote schema change without team confirmation. |
 
 ## Scope changes
 | Time | Change | Decided by |
 |---|---|---|
 
 ## Open questions
-- Team must sign in using `npx supabase login`; CLI project listing returned AccessTokenRequiredError.
+- Team approval to apply the prepared initial migration; question sent with exact project and migration path.
+- Run one operator-authorized gemini-check in Dashboard. Do not expose administrator credentials in chat or source.
 - Confirm retaining the approved blue/orange Montserrat design and human avatar assets instead of SRS 11 magenta/system-font/layered calendar ghost.
 - ZIP contains no designer assets. Required layered SVG and five backgrounds are absent; approved previous prototype assets are available separately.
 - Confirm month-end clamp, half odd intervals in days rounded down, shared HP transaction for documents/tasks, omission of persons/children from assistant context.
@@ -52,8 +55,9 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 ## Known issues
 | Step | Issue | Severity (blocks demo / annoying / cosmetic) |
 |---|---|---|
-| 1 | CLI login missing: link fails with AccessTokenRequiredError. No function deployed or live Gemini check performed. Auth UI renders but sign-up not tested with a real account. | blocks demo |
+| 1 | gemini-check is deployed but returned AUTH-0001 before generation. Auto-review rejected full administrator credential retrieval. Live Gemini connection is unverified. | blocks demo |
 | 1 | Database types intentionally not hand-written; generate after linking and inspecting real schema | blocks demo |
+| 2 | Migration awaits explicit team apply approval; SQL acceptance script not executed; no claim of verified RLS yet | blocks demo |
 
 ## Latest checks — 2026-10-08
 
@@ -80,3 +84,17 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 - Generation attempt ledger: **0/20**, no retries or fallback calls. Other team usage unknown.
 - Docs used to normalize model IDs: https://ai.google.dev/gemini-api/docs/latest-model?hl=en and https://ai.google.dev/gemini-api/docs/whats-new-gemini-3.5?hl=en.
 - Remaining team setup: local Supabase CLI login; then link, deploy, perform exactly one operator-authorized check and record outcome; delete temporary function before step 2. iPhone verification stays with the team.
+
+## Latest continuation — linked project and initial schema
+
+- `npx.cmd supabase link --project-ref bjfrcyxaczqcxwccbuyx`: succeeded.
+- `npx.cmd supabase functions deploy gemini-check --project-ref bjfrcyxaczqcxwccbuyx --use-api`: succeeded.
+- One operator smoke request returned HTTP 401 / AUTH-0001 before reaching Gemini. No model generation occurred.
+- Automatic approval review rejected a subsequent command that would reveal the full service-role credential. Command did not execute. No alternate credential extraction attempted. Team can run the protected check in Dashboard.
+- **Gemini generation attempts by this agent: 0/20**. Edge HTTP attempts: 1. Other team usage unknown.
+- Created `supabase/migrations/20261008133212_initial_schema.sql`: eight SRS tables, private bucket, owner RLS, minimal column grants, protected-state triggers, signup profile trigger, notification daily deduplication, realtime notifications. Friendships remains inaccessible to clients pending F16 activation.
+- Created `supabase/tests/rls.sql`: explicit transaction, two temporary account fixtures, ownership checks and four forbidden-write checks, final rollback. Not yet executed; does not replace signed-in HTTP/iPhone tests.
+- `npx.cmd supabase db push --dry-run`: succeeded, reports only the prepared migration. This checks pending migration status, NOT PostgreSQL execution or RLS behavior.
+- No migration applied, no database types fabricated, no step-2 frontend/backend queries implemented against an absent schema.
+- Typecheck passed; lint passed; build passed with existing chunk-size warning. `npm test` exits 0 with no rules tests (n/a).
+- Next: team approves `db push` (or runs it), generate database types, test security, continue profile/onboarding and real screens. Existing local app remains on localhost:5195.
