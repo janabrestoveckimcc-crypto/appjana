@@ -27,6 +27,10 @@ begin
   if (select count(*) from public.documents) <> 1 then raise exception 'FAIL: document isolation'; end if;
   if (select count(*) from public.tasks) <> 1 then raise exception 'FAIL: task isolation'; end if;
   if (select count(*) from storage.objects where bucket_id='documents') <> 1 then raise exception 'FAIL: storage isolation'; end if;
+  update public.profiles set display_name='QA A',tone='sarkasticno',language='en',
+    avatar_config='{"gender":"male","height":"tall","build":"medium"}'::jsonb where id=auth.uid();
+  if not found then raise exception 'FAIL: own profile cannot be edited'; end if;
+  if (select hp from public.profiles where id=auth.uid()) <> 0 then raise exception 'FAIL: profile edit changed HP'; end if;
   update public.tasks set title = 'Edited A' where id='30000000-0000-4000-8000-000000000001';
   if not found then raise exception 'FAIL: own task cannot be edited'; end if;
   update public.tasks set title = 'Hacked B' where id='30000000-0000-4000-8000-000000000002';
@@ -58,6 +62,8 @@ $$;
 select set_config('request.jwt.claims','{"sub":"10000000-0000-4000-8000-000000000002","role":"authenticated"}',true);
 do $$
 begin
+  if (select count(*) from public.profiles) <> 1 then raise exception 'FAIL: B profile isolation'; end if;
+  if (select count(*) from public.tasks) <> 1 then raise exception 'FAIL: B task isolation'; end if;
   if exists(select 1 from public.documents where user_id <> auth.uid()) then raise exception 'FAIL: B sees A document'; end if;
   if (select title from public.tasks where id='30000000-0000-4000-8000-000000000002') <> 'B task' then raise exception 'FAIL: B task changed'; end if;
   if exists(select 1 from storage.objects where bucket_id='documents' and name like '10000000-0000-4000-8000-000000000001/%') then raise exception 'FAIL: B sees A storage'; end if;

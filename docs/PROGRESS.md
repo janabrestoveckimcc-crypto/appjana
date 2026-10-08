@@ -2,7 +2,7 @@
 
 Codex updates this file after every task, before the step's commit. Only the team fills in the **Verified on iPhone** column.
 
-**Current step:** 2 — initial migration prepared; awaiting team approval to apply. Step 1 live Gemini check remains unverified.
+**Current step:** 2 — initial migration applied; profile and visual foundation implemented. Step 1 live Gemini check remains unverified.
 **Phase:** building
 **Push decision at 1:30 (SRS 13, step 3):** pending
 
@@ -12,7 +12,7 @@ Status: `todo` · `in-progress` · `done` · `blocked`
 | Step | Name | Status | Rules tests | Commit | Verified on iPhone (team) | Notes |
 |---|---|---|---|---|---|---|
 | 1 | Postavljanje | in-progress | n/a (no rules yet) | see git log | | CLI linked; gemini-check deployed; operator check returned 401 before Gemini; live model check outstanding |
-| 2 | Temelj | in-progress | n/a | see git log | | Initial schema and transactional security checklist prepared; dry run passes; migration NOT applied |
+| 2 | Temelj | in-progress | n/a | see git log | | Schema applied, generated types, transactional RLS checks passed; real profile/screens foundation implemented |
 | 3 | Push test (branch push-test, own Supabase and Vercel project) | todo | n/a | | | |
 | 4 | Dokumenti | todo | | | | |
 | 5 | Kalendar | todo | | | | |
@@ -44,9 +44,9 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 |---|---|---|
 
 ## Open questions
-- Team approval to apply the prepared initial migration; question sent with exact project and migration path.
+- Migration approval received and application completed.
 - Run one operator-authorized gemini-check in Dashboard. Do not expose administrator credentials in chat or source.
-- Confirm retaining the approved blue/orange Montserrat design and human avatar assets instead of SRS 11 magenta/system-font/layered calendar ghost.
+- Design resolved: user explicitly requests approved 5188 visual design, colors, typography and animations.
 - ZIP contains no designer assets. Required layered SVG and five backgrounds are absent; approved previous prototype assets are available separately.
 - Confirm month-end clamp, half odd intervals in days rounded down, shared HP transaction for documents/tasks, omission of persons/children from assistant context.
 - Further game details before implementation: first-day streak bonus, recurring task creation, boss completion snapshot and map-5 star persistence.
@@ -56,8 +56,8 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 | Step | Issue | Severity (blocks demo / annoying / cosmetic) |
 |---|---|---|
 | 1 | gemini-check is deployed but returned AUTH-0001 before generation. Auto-review rejected full administrator credential retrieval. Live Gemini connection is unverified. | blocks demo |
-| 1 | Database types intentionally not hand-written; generate after linking and inspecting real schema | blocks demo |
-| 2 | Migration awaits explicit team apply approval; SQL acceptance script not executed; no claim of verified RLS yet | blocks demo |
+| 2 | Real user email-confirmed login/onboarding acceptance outstanding | blocks demo |
+| 2 | Full layered avatar artwork and exact iPhone icon sizes unavailable | cosmetic |
 
 ## Latest checks — 2026-10-08
 
@@ -98,3 +98,17 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 - No migration applied, no database types fabricated, no step-2 frontend/backend queries implemented against an absent schema.
 - Typecheck passed; lint passed; build passed with existing chunk-size warning. `npm test` exits 0 with no rules tests (n/a).
 - Next: team approves `db push` (or runs it), generate database types, test security, continue profile/onboarding and real screens. Existing local app remains on localhost:5195.
+
+## Current verified state — 2026-10-08 (supersedes earlier snapshots)
+
+- Team explicitly approved applying the initial migration. `supabase db push --yes` succeeded; applied migration is immutable.
+- Generated `src/lib/database.types.ts` from the linked database and typed the Supabase client.
+- `supabase/tests/rls.sql` passed with two transactional account fixtures: owner isolation, forbidden HP/status/ledger writes, permitted own profile edits. Fixtures rolled back; remaining test users: 0. Linked database lint: no errors. This does not replace browser account or iPhone testing.
+- Added real profile read/update and onboarding, gender/height/build avatar rendering, real document/task/chat-history queries and five-screen shell. No fake records or AI answers. Document upload/extraction, task completion/HP, chat sending and notifications remain later steps.
+- User explicitly requires the approved localhost:5188 design, overriding conflicting visual defaults in the ZIP: blue/orange, Montserrat, existing human avatars, original hand intro and animations. Transferred intro-v6, letter/logo/hand fade animations, original login styling and welcome bubbles. Real auth uses email/password; profile details follow authentication.
+- Browser at 390x844: intro visible, logo transitions to login, registration switch and HR/EN translations work. Real user registration/email confirmation/session and onboarding still need live user acceptance. No credentials entered during visual checks.
+- Reused original approved icon unchanged (1254x1254); exact 192/512/180 assets and iPhone installation remain unverified. Hair/eyes/beard customization needs layered artwork; not simulated.
+- Typecheck and lint passed. Build passed (236 modules; 642 kB JS chunk warning). Vitest exits 0 with no tests; date/HP rules not implemented. Windows sandbox initially blocked Vite child processes; checks succeeded with approved execution outside sandbox.
+- Gemini generation attempts remain 0/20. Operator smoke check remains unverified; no credential extraction workaround.
+- Next: user tests real email-confirmed login/onboarding, operator checks Gemini, then proceed in SRS step order. Map pan/zoom and full approved map interactions still need transfer.
+

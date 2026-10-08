@@ -1,0 +1,37 @@
+/* Faithful transfer of the approved 5188 intro and profile screen styling. */
+.relai-entry{width:min(440px,100%);margin:auto;min-height:100dvh;font-family:Montserrat,system-ui,sans-serif}
+.relai-entry .rg-intro{position:fixed;inset:0;margin:0 auto;width:min(440px,100vw);height:100dvh;max-width:none;max-height:none;padding:0;border:0;border-radius:0;background:#dfeafa;overflow:hidden;opacity:1;transition:opacity .9s ease,filter .9s ease;z-index:100}
+.relai-entry .rg-intro-enter{position:relative;width:100%;height:100%;display:block;padding:0;border:0;border-radius:0;background:#e4edf7;color:#173e6c;text-align:left;overflow:hidden;isolation:isolate}
+.relai-entry .rg-intro-image{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;object-position:50% 50%;z-index:-3;animation:rg-hand-approach 4.5s cubic-bezier(.2,.65,.2,1) both;transform-origin:50% 42%}
+.relai-entry .rg-intro-haze{position:absolute;inset:0;z-index:-2;background:linear-gradient(#f3f7fc45,transparent 42%,#5c90c312);pointer-events:none}
+.relai-entry .rg-intro-title{position:absolute;top:45%;left:0;right:0;width:100%;text-align:center;line-height:1.1;font-size:clamp(70px,20vw,90px);letter-spacing:-5px;color:#1e4879}
+.relai-entry .rg-intro-title .rg-animated-logo{display:inline-flex;justify-content:center;letter-spacing:-6px;font-weight:800;color:#214e86;text-shadow:0 1px #f3f8ff}
+.relai-entry .rg-animated-logo>span{animation:rg-letter 1.8s cubic-bezier(.2,.8,.2,1) both}
+.relai-entry .rg-animated-logo>span:nth-child(2){animation-delay:.12s}.relai-entry .rg-animated-logo>span:nth-child(3){animation-delay:.24s}.relai-entry .rg-animated-logo>span:nth-child(4){animation-delay:.36s}.relai-entry .rg-animated-logo>span:nth-child(5){animation-delay:.48s}
+.relai-entry .rg-animated-logo>span:nth-child(4),.relai-entry .rg-animated-logo>span:nth-child(5){color:#3972a7}
+.relai-entry .rg-intro-subtitle{display:block;font-size:13px;line-height:1.8;letter-spacing:0;font-weight:500;color:#365c84;margin:23px auto 0;animation:rg-subtitle 1.2s .65s both}
+.relai-entry .rg-intro-hint{position:absolute;bottom:8%;width:100%;text-align:center;font-size:8px;font-weight:800;letter-spacing:2px;color:#35587e}
+.relai-entry .rg-intro-hint>span{display:block;font-size:10px;font-weight:500;letter-spacing:0;margin-top:11px;color:#456890}
+.relai-entry .rg-intro.is-leaving{opacity:0;filter:blur(13px);pointer-events:none}
+.relai-entry .rg-intro-logo-button{display:inline-block;padding:8px 14px;border:0;background:none;border-radius:14px;color:inherit;font:inherit;line-height:inherit;letter-spacing:inherit;box-shadow:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.relai-entry .rg-intro-logo-button .rg-animated-logo{animation:rg-logo-grow 3.8s cubic-bezier(.18,.7,.24,1) both;transform-origin:50% 65%;pointer-events:none}
+.relai-entry .rg-intro-logo-button:hover{filter:drop-shadow(0 0 16px #75a6df26)}
+.relai-entry .rg-intro-logo-button:focus-visible{outline:2px solid #4f7caf;outline-offset:10px}
+@keyframes rg-hand-approach{0%{transform:scale(.8);opacity:.15;filter:blur(8px)}40%{opacity:1;filter:blur(0)}100%{transform:scale(1.16);opacity:.2;filter:blur(3px)}}
+@keyframes rg-logo-grow{from{transform:scale(.6);opacity:.15}to{transform:scale(1.12);opacity:1}}
+@keyframes rg-letter{from{opacity:0;transform:translateY(12px);filter:blur(15px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes rg-subtitle{from{opacity:0;translate:0 5px}to{opacity:1;translate:0 0}}
+.relai-entry .rg-profile-dialog{--profile-bg:#111e30;--profile-panel:#1c3047;--profile-line:#819cb242;--profile-ink:#edf4ff;--profile-muted:#b8c9db;min-height:100dvh;width:100%;padding:29px 25px 30px;background:radial-gradient(ellipse at 100% 0,#f4ba8030,transparent 42%),radial-gradient(ellipse at 0 30%,#6097c62d,transparent 57%),var(--profile-bg);color:var(--profile-ink);box-shadow:0 20px 90px #040c1966;display:flex;flex-direction:column;justify-content:center;padding-top:max(24px,env(safe-area-inset-top));padding-bottom:max(28px,env(safe-area-inset-bottom))}
+.entry-brand-row{position:relative;align-items:flex-start}.entry-brand-row .language{position:absolute;right:0;top:-3px;min-height:40px;padding:10px;color:#b8c9db}
+.relai-entry .rg-profile-wordmark{display:block;font-weight:800;font-size:33px;letter-spacing:-2px;color:#d9eafd;margin-bottom:28px}.relai-entry .rg-profile-wordmark>span{color:#99bfea}
+.relai-entry .rg-profile-dialog-header{position:relative;margin-bottom:8px;flex-shrink:0}.relai-entry .rg-profile-eyebrow{display:block;font-size:9px;letter-spacing:1.8px;color:#e7bb93;margin-bottom:11px}
+.relai-entry .rg-profile-dialog h1{font-weight:800;font-size:28px;line-height:1.17;letter-spacing:-1px;color:var(--profile-ink);margin:0 0 10px}.relai-entry .rg-profile-dialog-header>p{font-size:12px;line-height:1.7;color:var(--profile-muted);margin:0}
+.relai-entry .rg-profile-form{display:grid;gap:17px;flex-shrink:0}.relai-entry .rg-profile-field{display:flex;flex-direction:column;gap:7px;font-size:11px;color:var(--profile-muted);min-width:0;margin:0}
+.relai-entry .rg-profile-dialog input{width:100%;min-width:0;max-width:100%;height:48px;padding:10px 12px;margin:0;border:1px solid var(--profile-line);border-radius:13px;background:var(--profile-panel);color:var(--profile-ink);font-family:inherit;font-weight:500;font-size:16px;color-scheme:dark;outline-offset:3px}
+.relai-entry .rg-profile-dialog input:focus{border-color:#aec7e8;outline:2px solid #a9cffa44}.relai-entry .rg-profile-dialog input::placeholder{color:#9eb4ca;font-size:12px;opacity:1}
+.relai-entry .rg-profile-password{display:block;position:relative;width:100%;min-width:0}.relai-entry .rg-profile-password input{padding-right:49px}.relai-entry .rg-profile-password>button{position:absolute;right:3px;top:3px;width:42px;height:42px;min-height:42px;padding:0;display:grid;place-items:center;background:transparent;color:var(--profile-muted);border-radius:10px;border:0}
+.relai-entry .rg-profile-primary{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:50px;border:1px solid #ffd9b2;border-radius:15px;background:linear-gradient(130deg,#ffdcba,#ebb27d);color:#3e2e21;font-weight:800;font-size:12px;padding:13px 16px;box-shadow:0 8px 25px #e5a97914;margin-top:5px}.relai-entry .rg-profile-primary:hover{background:#ffdfbf}.relai-entry .quiet{margin:0;color:#b8c9db}
+.app-shell{max-width:440px}.bottom-nav{width:min(100%,440px)}
+@media(max-width:360px){.relai-entry .rg-intro-title{font-size:74px}.relai-entry .rg-intro-subtitle{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.relai-entry .rg-animated-logo>span,.relai-entry .rg-intro-subtitle,.relai-entry .rg-intro-image,.relai-entry .rg-intro-logo-button .rg-animated-logo{animation:none}.relai-entry .rg-intro-image{opacity:.3}.relai-entry .rg-intro-logo-button .rg-animated-logo{transform:scale(1.12)}.relai-entry .rg-intro{transition:none}}
+

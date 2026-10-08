@@ -1,0 +1,14 @@
+{
+  "id": "/",
+  "name": "relAI",
+  "short_name": "relAI",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#101723",
+  "theme_color": "#101723",
+  "icons": [
+    {"src":"/brand/relAI-blue.svg","type":"image/svg+xml","sizes":"any","purpose":"any"},
+    {"src":"/icons/app-icon.png","type":"image/png","sizes":"1254x1254","purpose":"any"}
+  ]
+}

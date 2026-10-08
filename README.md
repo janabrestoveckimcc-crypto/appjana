@@ -36,7 +36,7 @@ Vitest is limited to `supabase/functions/_shared/**/*.test.ts` per TESTING.md. N
 4. The team confirmed the database is empty. The single schema migration belongs to step 2; none is created in step 1.
 5. Generate `src/lib/database.types.ts` with the CLI after schema agreement. No hand-written generated type file is included.
 
-The current auth client deliberately has no database queries until generated types are available. The CLI is now logged in and linked. The initial schema is prepared in `supabase/migrations/20261008133212_initial_schema.sql`; dry run reports that migration only. It has **not** been applied. `supabase/tests/rls.sql` is the transactional security checklist to run after application. No secrets were changed.
+The CLI is logged in and linked. The initial migration `supabase/migrations/20261008133212_initial_schema.sql` is applied with team approval. Database types are generated. Transactional two-account SQL security checks passed, and fixtures were rolled back. Real profile updates and document/task/chat-history reads are implemented; browser-account acceptance remains outstanding. No secrets were changed.
 
 ## Step 1 Gemini check
 
@@ -56,6 +56,7 @@ Recorded Gemini attempts by this agent so far: **0**. Live model/key access has 
 
 ## Remaining build
 
-See `docs/PROGRESS.md`. The map, documents, calendar, AI assistant, HP transactions, proof verification and notifications in this repository are still to be implemented. The earlier approved UX assets remain in the separate `future-self-app` project. The input ZIP contains documentation only, not the layered ghost SVG, app PNG icons or five map backgrounds specified by the SRS.
+See `docs/PROGRESS.md`. The five-screen foundation, real profile data and approved intro/login visuals are implemented. Upload/extraction, assistant sending, full map interactions, HP transactions, proof verification and notifications remain to be implemented. The earlier approved UX assets remain in the separate `future-self-app` project. The input ZIP contains documentation only, not the layered ghost SVG, app PNG icons or five map backgrounds specified by the SRS.
 
 The user's latest request authorizes localhost execution and the explicit initial Git pushes despite older generic restrictions in the supplied AGENTS.md. It does not resolve the existing schema, model IDs or contradictory game rules.
+
