@@ -37,3 +37,4 @@ if(window.parent!==window){
  // Standalone approved UX preview, retaining the original explicit demo labels.
  start();
 }
+import './responsive.css';

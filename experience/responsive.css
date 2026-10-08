@@ -1,0 +1,89 @@
+/* Responsive adaptation of the approved experience, loaded after its original styles. */
+html,body{width:100%;min-width:0}
+#root,#future-self{width:100%;min-width:0}
+#future-self :is(input,select,textarea){max-width:100%}
+#future-self .rg-navigation{height:calc(73px + env(safe-area-inset-bottom));padding-bottom:max(8px,env(safe-area-inset-bottom))}
+#future-self .rg-game{height:calc(100dvh - 73px - env(safe-area-inset-bottom))}
+#future-self :is(.rg-profile-dialog,.fs-doc-dialog,.rg-menu){max-height:calc(100dvh - 24px);overflow:auto}
+@media(min-width:600px){
+ #root,#future-self{max-width:760px}
+ #future-self .fs-main{padding:28px 32px 110px!important}
+ #future-self .rg-navigation{width:min(760px,100%)}
+ #future-self .rg-hud{padding-inline:30px}
+ #future-self .rg-world-heading{padding-inline:30px}
+ #future-self .rg-game{max-height:none}
+ #future-self .rg-global-chat{right:max(24px,calc((100vw - 760px)/2 + 24px))}
+ #future-self .fs-form-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #future-self .rg-avatar-page{padding:28px 42px 110px}
+ #future-self .rg-avatar-header h1,#future-self .fs-page-header h1{font-size:30px}
+ #future-self .fs-doc-tools{display:flex;flex-wrap:nowrap}
+ #future-self .fs-doc-search{flex:1;min-width:0}
+ #future-self .fs-doc-tools>select{width:auto}
+ #future-self .rg-intro{width:100vw}
+ #future-self .rg-intro-image{object-fit:contain}
+}
+@media(min-width:1024px){
+ #root,#future-self{max-width:1280px}
+ #root{box-shadow:0 0 100px #0004}
+ #future-self .fs-main{padding:42px 56px 125px!important}
+ #future-self .fs-page-header{margin-bottom:32px}
+ #future-self .fs-page-header h1{font-size:36px}
+ #future-self .rg-navigation{width:600px;bottom:16px;border:1px solid #90b5d13d;border-radius:24px;box-shadow:0 12px 40px #0004}
+ #future-self .rg-navigation>button{font-size:12px}
+ #future-self .rg-game{height:100dvh;min-height:680px;padding-bottom:100px}
+ #future-self .rg-hud{height:88px;padding:20px 40px 10px}
+ #future-self .rg-brand-button .fs-relai-logo{width:100px;height:44px}
+ #future-self .rg-brand-future{font-size:12px}
+ #future-self .rg-hp{min-width:110px;padding:12px 16px}
+ #future-self .rg-xp strong{font-size:17px}
+ #future-self .rg-world-heading{padding:10px 40px 16px}
+ #future-self .rg-world-heading h1{font-size:20px}
+ #future-self .rg-modes button{font-size:13px;min-height:42px;padding:10px 20px}
+ #future-self .rg-world{inset:160px 340px 112px 32px;border-radius:28px;border:1px solid #9ebedb30}
+ #future-self .rg-team-controls{top:176px;left:52px}
+ #future-self .rg-next-task{top:190px;bottom:auto;left:auto;right:32px;width:276px;min-height:150px;flex-wrap:wrap;padding:24px;gap:16px}
+ #future-self .rg-next-task h2{font-size:16px;line-height:1.5}
+ #future-self .rg-next-task>div{min-width:0;flex:1}
+ #future-self .rg-next-task>button{margin-left:auto}
+ #future-self .rg-map-camera{bottom:156px;left:52px}
+ #future-self .rg-map-tools{bottom:156px;right:360px}
+ #future-self .rg-map-help{bottom:124px;left:32px;right:340px;font-size:11px}
+ #future-self .rg-global-chat{right:max(42px,calc((100vw - 1280px)/2 + 42px));bottom:120px}
+ #future-self[data-current-view=map] .rg-global-chat{bottom:150px;width:78px;height:78px}
+ #future-self[data-current-view=map] .rg-global-chat .rg-head-crop{width:66px;height:66px}
+ #future-self .rg-energy-sheet{left:auto;right:32px;width:330px;top:88px}
+ #future-self[data-current-view=documents] .fs-doc-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;max-width:1040px;margin-inline:auto}
+ #future-self[data-current-view=documents] .fs-doc-bubble h3{font-size:18px}
+ #future-self[data-current-view=documents] .fs-doc-bubble-meta{font-size:12px}
+ #future-self .rg-milestone-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #future-self[data-current-view=settings] #fs-content{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
+ #future-self[data-current-view=settings] #fs-content>.fs-settings-layout{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+ #future-self[data-current-view=settings] #fs-content>section{margin:0}
+ #future-self .rg-avatar-page{max-width:1000px;margin:auto;padding:36px 48px 125px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:60px;align-items:start}
+ #future-self .rg-avatar-header{grid-column:1/-1;margin-bottom:22px}
+ #future-self .rg-profile-summary{grid-column:1;margin:0}
+ #future-self .rg-avatar-stage{grid-column:1;grid-row:3/8;height:440px}
+ #future-self .rg-avatar-large{width:240px;height:400px}
+ #future-self .rg-avatar-page>:is(.rg-gender,.rg-presence-readout,.rg-custom-tabs,.rg-custom-panel,.rg-save-avatar){grid-column:2}
+ #future-self .rs-social{max-width:900px;margin:auto;padding-bottom:120px}
+ #future-self .rs-chat-log{max-width:760px;margin-inline:auto}
+ #future-self .rs-composer{max-width:760px;margin-inline:auto}
+ #future-self .rs-message{max-width:75%}
+}
+@media(max-width:359px){
+ #future-self .rg-hud{gap:6px;padding-inline:10px}
+ #future-self .rg-brand-button .fs-relai-logo{width:54px}
+ #future-self .rg-brand-future{font-size:8px}
+ #future-self .rg-hp{min-width:70px;padding:6px}
+ #future-self .rg-xp{gap:4px;padding:6px}
+ #future-self .rg-xp strong{font-size:10px}
+ #future-self .fs-main{padding-inline:12px!important}
+ #future-self .rg-theme-options{grid-template-columns:1fr}
+ #future-self .rg-profile-form-row{grid-template-columns:1fr}
+}
+@media(min-width:1024px){#future-self .rg-next-task h2{white-space:normal;overflow:visible;text-overflow:clip}#future-self .rg-next-task p{font-size:12px}#future-self .rg-next-task{display:grid;grid-template-columns:40px minmax(0,1fr)}#future-self .rg-next-task>button{grid-column:2;justify-self:end}#future-self .rg-custom-tabs button,#future-self .rg-control-label,#future-self .rg-slider-label{font-size:14px}}
+@media(min-width:1024px){
+ #future-self[data-current-view=documents] .fs-page-header h1{font-size:36px}
+ #future-self .fs-sub,#future-self .fs-field,#future-self .rg-theme-options>button,#future-self .fs-doc-tabs button{font-size:14px}
+ #future-self .fs-small-print,#future-self .fs-doc-drop span,#future-self .rg-profile-settings button{font-size:12px}
+}

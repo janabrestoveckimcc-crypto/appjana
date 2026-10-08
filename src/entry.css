@@ -35,3 +35,4 @@
 @media(max-width:360px){.relai-entry .rg-intro-title{font-size:74px}.relai-entry .rg-intro-subtitle{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.relai-entry .rg-animated-logo>span,.relai-entry .rg-intro-subtitle,.relai-entry .rg-intro-image,.relai-entry .rg-intro-logo-button .rg-animated-logo{animation:none}.relai-entry .rg-intro-image{opacity:.3}.relai-entry .rg-intro-logo-button .rg-animated-logo{transform:scale(1.12)}.relai-entry .rg-intro{transition:none}}
 
+@media(min-width:600px){.relai-entry .rg-intro{width:100vw}.relai-entry .rg-intro-image{object-fit:contain}.relai-entry.auth-entry{max-width:520px;width:100%;padding:32px 0;display:flex;align-items:center}.relai-entry .rg-profile-dialog{min-height:0;border-radius:28px;padding:48px;width:100%}.relai-entry .rg-intro-title{font-size:96px}}
