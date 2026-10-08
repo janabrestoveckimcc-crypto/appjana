@@ -29,7 +29,7 @@ if(window.parent!==window){
  window.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==parent)return;
   if(event.data?.type==='relai:init'&&typeof event.data.userId==='string'){
-   start({...event.data,onLogout:()=>parent.postMessage({type:'relai:logout'},location.origin),onPersist:state=>parent.postMessage({type:'relai:profile',state},location.origin)});
+   start({...event.data,onPush:()=>parent.postMessage({type:'relai:push'},location.origin),onLogout:()=>parent.postMessage({type:'relai:logout'},location.origin),onPersist:state=>parent.postMessage({type:'relai:profile',state},location.origin)});
   }
  });
  parent.postMessage({type:'relai:ready'},location.origin);

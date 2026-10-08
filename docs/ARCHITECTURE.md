@@ -62,3 +62,6 @@ docs/
 - Every edge function returns errors in one shape: `{ "status": 400, "code": "DOC-0001", "detail": "user-safe message in the user's language", "reason": "OPTIONAL_MACHINE_CAUSE" }`. Codes are stable and defined in `_shared/errors.ts`. The frontend branches on `code`, never on message text.
 - No empty `catch`. Never show stack traces or system details to the user.
 - Every async view has loading, empty, error (with retry) and success states (SRS 10).
+
+### Direct push implementation (user-authorized, 2026-10-08)
+Server-only npm:web-push@3.6.7 creates encrypted, VAPID-signed request details; native fetch performs delivery. Deno typecheck and deployed authenticated configuration verified. Actual push delivery still needs a subscribed browser/device test. VAPID private key remains exclusively in Supabase Secrets. Frontend reads the public key from send-push config; only Supabase URL and publishable key are build environment variables.
