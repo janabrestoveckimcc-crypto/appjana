@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.supabase/
+supabase/.temp/
+supabase/.branches/
+*.log
