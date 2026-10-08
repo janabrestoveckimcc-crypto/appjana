@@ -14,7 +14,10 @@ export async function signIn(input: { email: string; password: string }): Promis
   if (error) throw error;
 }
 export async function signUp(input: { email: string; password: string }): Promise<boolean> {
-  const { data, error } = await getSupabase().auth.signUp(input);
+  const { data, error } = await getSupabase().auth.signUp({
+    ...input,
+    options: { emailRedirectTo: `${window.location.origin}/` },
+  });
   if (error) throw error;
   return !data.session;
 }

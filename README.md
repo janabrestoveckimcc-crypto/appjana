@@ -60,3 +60,11 @@ See `docs/PROGRESS.md`. The five-screen foundation, real profile data and approv
 
 The user's latest request authorizes localhost execution and the explicit initial Git pushes despite older generic restrictions in the supplied AGENTS.md. It does not resolve the existing schema, model IDs or contradictory game rules.
 
+
+## Email verification redirect (localhost)
+
+Registration explicitly sends the current app origin as `emailRedirectTo`. Hosted Supabase also needs Authentication > URL Configuration:
+- Site URL: `http://127.0.0.1:5195/` while testing locally.
+- Redirect URLs: `http://127.0.0.1:5195/` and `http://localhost:5195/`.
+
+The team manages Dashboard settings. Editing local `supabase/config.toml` does not update hosted Auth settings. Open confirmation mail on the computer running Vite; localhost on a phone means that phone. If verification succeeded before a failed redirect, try signing in directly at the app first. Existing email links are not rewritten by this code change.

@@ -112,3 +112,12 @@ The team's answers to open questions (kickoff and later). Every new Codex sessio
 - Gemini generation attempts remain 0/20. Operator smoke check remains unverified; no credential extraction workaround.
 - Next: user tests real email-confirmed login/onboarding, operator checks Gemini, then proceed in SRS step order. Map pan/zoom and full approved map interactions still need transfer.
 
+
+## Fix — email confirmation redirect, 2026-10-08
+
+- User reports confirmation link ends at an unreachable site. Signup had no `emailRedirectTo`, and local Supabase configuration still referenced port 3000. Hosted URL configuration and actual failed destination have not been inspected; requested only origin/device from user (no tokens).
+- Signup now explicitly requests current app origin plus slash. Local Auth configuration updated to port 5195. No hosted settings, schema, keys or email templates changed.
+- Team must allow `http://127.0.0.1:5195/` and `http://localhost:5195/` in hosted Authentication > URL Configuration, with Site URL set to the former for local testing. Dashboard management remains with team per AGENTS.md.
+- Confirmation must be opened on the computer running Vite. Try direct login if email was already confirmed before the failed redirect. Existing messages are not rewritten.
+- No Gemini calls or auth emails sent during this fix. End-to-end verification depends on the actual hosted redirect configuration and user confirmation.
+- Checks: typecheck, lint and build passed; existing chunk-size warning remains. Vitest exits 0 with no rule tests (n/a). No migration or function deployment. iPhone and real email confirmation not verified.
